@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF14 攻略カンペ</title>
+
+<style>
+:root{
+    --bg:#121212;
+    --panel:#1e1e1e;
+    --accent:#4fc3f7;
+    --btn:#2c2c2c;
+    --btn-active:#4fc3f7;
+    --btn-muted:#666;
+}
+
+body{
+    margin:0;
+    font-family:"Segoe UI", sans-serif;
+    background:var(--bg);
+    color:#fff;
+}
+
+.container{
+    display:flex;
+    height:100vh;
+}
+
+.left{
+    width:45%;
+    padding:20px;
+    background:var(--panel);
+}
+
+.right{
+    width:55%;
+    padding:20px;
+}
+
+.section{
+    margin-bottom:24px;
+}
+
+.section h3{
+    margin-bottom:10px;
+    color:var(--accent);
+    font-size:17px;
+}
+
+.btn-group{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+/* 🔘 大きくて押しやすいボタン */
+button{
+    flex:1 1 140px;
+    min-height:56px;
+    padding:14px 16px;
+    border-radius:12px;
+    border:none;
+    background:var(--btn);
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    transition:.15s;
+}
+
+button.active{
+    background:var(--btn-active);
+    color:#000;
+    font-weight:700;
+}
+
+button.inactive{
+    background:#191919;
+    color:var(--btn-muted);
+}
+
+button:hover{
+    filter:brightness(1.15);
+}
+
+/* リセット */
+.reset-btn{
+    width:100%;
+    min-height:56px;
+    margin-bottom:20px;
+    background:#444;
+    font-size:17px;
+}
+
+.reset-btn:hover{
+    background:#666;
+}
+
+.output-box{
+    background:#1a1a1a;
+    padding:24px;
+    border-radius:14px;
+    font-size:20px;
+    line-height:1.9;
+    box-shadow:0 0 0 1px #222 inset;
+}
+
+/* 📱 iPhone想定 */
+@media (max-width: 768px){
+    .container{
+        flex-direction:column;
+        height:auto;
+    }
+    .left,.right{
+        width:100%;
+    }
+    .btn-group{
+        gap:14px;
+    }
+    button{
+        flex:1 1 48%;
+        font-size:17px;
+        min-height:60px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="left">
+    <button class="reset-btn" id="reset">🔄 リセット</button>
+
+    <div class="section"><h3>①</h3>
+        <div class="btn-group" data-key="q1">
+            <button data-value='X「1・4 → A・D頭割」'>X</button>
+            <button data-value='十「A・D → 1・4頭割」'>十</button>
+        </div>
+    </div>
+
+    <div class="section"><h3>②</h3>
+        <div class="btn-group" data-key="q2">
+            <button data-value="1・2">1・2（北左右／南前後）</button>
+            <button data-value="3・4">3・4（北前後／南左右）</button>
+        </div>
+    </div>
+
+    <div class="section"><h3>③</h3>
+        <div class="btn-group" data-key="q3">
+            <button data-value="頭割先">頭割先</button>
+            <button data-value="範囲先">範囲先</button>
+        </div>
+    </div>
+
+    <div class="section"><h3>④ 塔の位置</h3>
+        <div class="btn-group" data-key="q4">
+            <button data-value='塔の位置「左後ろ」'>左後ろ</button>
+            <button data-value='塔の位置「右後ろ」'>右後ろ</button>
+        </div>
+    </div>
+
+    <div class="section"><h3>⑤ 吸い込まれた分身</h3>
+        <div class="btn-group" data-key="q5">
+            <button data-value='A「北：横安置 南：縦安置」'>A</button>
+            <button data-value='C「北：縦安置 南：横安置」'>C</button>
+        </div>
+    </div>
+
+    <div class="section"><h3>⑥ 立ち入り禁止島</h3>
+        <div class="btn-group" data-key="q6">
+            <button data-value='立ち入り禁止島「D」'>D</button>
+            <button data-value='立ち入り禁止島「B」'>B</button>
+        </div>
+    </div>
+
+    <div class="section"><h3>⑦ 島にきた分身</h3>
+        <div class="btn-group" data-key="q7">
+            <button data-value="北">北</button>
+            <button data-value="南">南</button>
+        </div>
+    </div>
+</div>
+
+<div class="right">
+    <h2>攻略カンペ</h2>
+    <div class="output-box" id="output">左の項目を選択してください</div>
+</div>
+
+</div>
+
+<script>
+const state = {};
+const output = document.getElementById("output");
+
+document.querySelectorAll(".btn-group").forEach(group=>{
+    const key = group.dataset.key;
+    const buttons = group.querySelectorAll("button");
+
+    buttons.forEach(btn=>{
+        btn.onclick = ()=>{
+            state[key] = btn.dataset.value;
+            buttons.forEach(b=>{
+                b.classList.toggle("active", b===btn);
+                b.classList.toggle("inactive", b!==btn);
+            });
+            update();
+        };
+    });
+});
+
+document.getElementById("reset").onclick = ()=>{
+    Object.keys(state).forEach(k=>delete state[k]);
+    document.querySelectorAll("button").forEach(b=>{
+        b.classList.remove("active","inactive");
+    });
+    output.innerHTML = "左の項目を選択してください";
+};
+
+function update(){
+    let q7Text="";
+    if(state.q7){
+        if(state.q2==="1・2"){
+            q7Text = state.q7==="北"?'北「左右安置」':'南「前後安置」';
+        }
+        if(state.q2==="3・4"){
+            q7Text = state.q7==="北"?'北「前後安置」':'南「左右安置」';
+        }
+    }
+
+    const lines=[
+        state.q1,
+        state.q2 && `② ${state.q2}`,
+        state.q3 && `③ ${state.q3}`,
+        state.q4,
+        state.q5,
+        state.q6,
+        q7Text && `⑦ ${q7Text}`
+    ].filter(Boolean);
+
+    output.innerHTML = lines.length
+        ? lines.join("<br>")
+        : "左の項目を選択してください";
+}
+</script>
+
+</body>
+</html>
