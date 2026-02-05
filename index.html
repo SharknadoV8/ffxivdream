@@ -94,7 +94,7 @@ button.inactive{
     box-shadow:0 0 0 1px #222 inset;
 }
 
-/*れすぽんしぶ */
+/* れすぽんしぶ */
 @media (max-width:768px){
     .container{
         flex-direction:column;
@@ -188,11 +188,10 @@ const state = {};
 const output = document.getElementById("output");
 
 function setActive(group, value){
-    const buttons = group.querySelectorAll("button");
-    buttons.forEach(b=>{
-        const isActive = b.dataset.value === value;
-        b.classList.toggle("active", isActive);
-        b.classList.toggle("inactive", !isActive);
+    group.querySelectorAll("button").forEach(btn=>{
+        const active = btn.dataset.value === value;
+        btn.classList.toggle("active", active);
+        btn.classList.toggle("inactive", !active);
     });
 }
 
@@ -204,12 +203,9 @@ document.querySelectorAll(".btn-group").forEach(group=>{
             state[key] = btn.dataset.value;
             setActive(group, btn.dataset.value);
 
-            /* じどうせんたく */
+            /*じどう */
             if(key === "q5"){
-                const northBtn = document.getElementById("q7-north");
-                const southBtn = document.getElementById("q7-south");
-                const q7Group = northBtn.parentElement;
-
+                const q7Group = document.querySelector('[data-key="q7"]');
                 if(btn.textContent === "A"){
                     state.q7 = "南";
                     setActive(q7Group, "南");
@@ -230,7 +226,7 @@ document.getElementById("reset").onclick = ()=>{
     document.querySelectorAll("button").forEach(b=>{
         b.classList.remove("active","inactive");
     });
-    output.innerHTML = "項目を選択してください";
+    output.innerHTML = "左の項目を選択してください";
 };
 
 function update(){
@@ -240,28 +236,28 @@ function update(){
     if(state.q7 && state.q2){
         if(state.q2 === "1・2"){
             if(state.q7 === "北"){
-                q7Text = '⑦ 北「左右安置」';
-                q8Text = '⑧ 前後安置';
+                q7Text = '北「左右安置」';
+                q8Text = '前後安置';
             }else{
-                q7Text = '⑦ 南「前後安置」';
-                q8Text = '⑧ 左右安置';
+                q7Text = '南「前後安置」';
+                q8Text = '左右安置';
             }
         }
         if(state.q2 === "3・4"){
             if(state.q7 === "北"){
-                q7Text = '⑦ 北「前後安置」';
-                q8Text = '⑧ 左右安置';
+                q7Text = '北「前後安置」';
+                q8Text = '左右安置';
             }else{
-                q7Text = '⑦ 南「左右安置」';
-                q8Text = '⑧ 前後安置';
+                q7Text = '南「左右安置」';
+                q8Text = '前後安置';
             }
         }
     }
 
     const lines = [
         state.q1,
-        state.q2 && `② ${state.q2}`,
-        state.q3 && `③ ${state.q3}`,
+        state.q2,
+        state.q3,
         state.q4,
         state.q5,
         state.q6,
@@ -271,7 +267,7 @@ function update(){
 
     output.innerHTML = lines.length
         ? lines.join("<br>")
-        : "項目を選択してください";
+        : "左の項目を選択してください";
 }
 </script>
 
