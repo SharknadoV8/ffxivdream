@@ -187,26 +187,36 @@ button.inactive{
 const state = {};
 const output = document.getElementById("output");
 
+function setActive(group, value){
+    const buttons = group.querySelectorAll("button");
+    buttons.forEach(b=>{
+        const isActive = b.dataset.value === value;
+        b.classList.toggle("active", isActive);
+        b.classList.toggle("inactive", !isActive);
+    });
+}
+
 document.querySelectorAll(".btn-group").forEach(group=>{
     const key = group.dataset.key;
-    const buttons = group.querySelectorAll("button");
 
-    buttons.forEach(btn=>{
+    group.querySelectorAll("button").forEach(btn=>{
         btn.onclick = ()=>{
             state[key] = btn.dataset.value;
+            setActive(group, btn.dataset.value);
 
-            buttons.forEach(b=>{
-                b.classList.toggle("active", b===btn);
-                b.classList.toggle("inactive", b!==btn);
-            });
-
-            /* ★ ⑤ → ⑦ 自動選択 */
+            /* ★ ⑤ → ⑦ 自動選択（Safari対応） */
             if(key === "q5"){
+                const northBtn = document.getElementById("q7-north");
+                const southBtn = document.getElementById("q7-south");
+                const q7Group = northBtn.parentElement;
+
                 if(btn.textContent === "A"){
-                    document.getElementById("q7-south").click();
+                    state.q7 = "南";
+                    setActive(q7Group, "南");
                 }
                 if(btn.textContent === "C"){
-                    document.getElementById("q7-north").click();
+                    state.q7 = "北";
+                    setActive(q7Group, "北");
                 }
             }
 
@@ -228,8 +238,8 @@ function update(){
     let q8Text = "";
 
     if(state.q7 && state.q2){
-        if(state.q2==="1・2"){
-            if(state.q7==="北"){
+        if(state.q2 === "1・2"){
+            if(state.q7 === "北"){
                 q7Text = '⑦ 北「左右安置」';
                 q8Text = '⑧ 前後安置';
             }else{
@@ -237,8 +247,8 @@ function update(){
                 q8Text = '⑧ 左右安置';
             }
         }
-        if(state.q2==="3・4"){
-            if(state.q7==="北"){
+        if(state.q2 === "3・4"){
+            if(state.q7 === "北"){
                 q7Text = '⑦ 北「前後安置」';
                 q8Text = '⑧ 左右安置';
             }else{
