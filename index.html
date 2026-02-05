@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>アルカディアンドリーム　カンペ</title>
+<title>アルカディアンドリーム</title>
 
 <style>
 :root{
@@ -64,7 +64,6 @@ button{
     color:#fff;
     font-size:16px;
     cursor:pointer;
-    transition:.15s;
 }
 
 button.active{
@@ -78,21 +77,12 @@ button.inactive{
     color:var(--btn-muted);
 }
 
-button:hover{
-    filter:brightness(1.15);
-}
-
-/* リセット */
 .reset-btn{
     width:100%;
     min-height:56px;
     margin-bottom:20px;
     background:#444;
     font-size:17px;
-}
-
-.reset-btn:hover{
-    background:#666;
 }
 
 .output-box{
@@ -104,8 +94,8 @@ button:hover{
     box-shadow:0 0 0 1px #222 inset;
 }
 
-/* レスポンシブ折り返し */
-@media (max-width: 768px){
+/* レスポンシブ折り返し*/
+@media (max-width:768px){
     .container{
         flex-direction:column;
         height:auto;
@@ -113,13 +103,10 @@ button:hover{
     .left,.right{
         width:100%;
     }
-    .btn-group{
-        gap:14px;
-    }
     button{
         flex:1 1 48%;
-        font-size:17px;
         min-height:60px;
+        font-size:17px;
     }
 }
 </style>
@@ -132,52 +119,59 @@ button:hover{
 <div class="left">
     <button class="reset-btn" id="reset">🔄 リセット</button>
 
-    <div class="section"><h3>①</h3>
+    <div class="section">
+        <h3>①</h3>
         <div class="btn-group" data-key="q1">
             <button data-value='X「1・4 → A・D頭割」'>X</button>
             <button data-value='十「A・D → 1・4頭割」'>十</button>
         </div>
     </div>
 
-    <div class="section"><h3>②</h3>
+    <div class="section">
+        <h3>②</h3>
         <div class="btn-group" data-key="q2">
             <button data-value="1・2">1・2（北左右／南前後）</button>
             <button data-value="3・4">3・4（北前後／南左右）</button>
         </div>
     </div>
 
-    <div class="section"><h3>③</h3>
+    <div class="section">
+        <h3>③</h3>
         <div class="btn-group" data-key="q3">
             <button data-value="頭割先">頭割先</button>
             <button data-value="範囲先">範囲先</button>
         </div>
     </div>
 
-    <div class="section"><h3>④ 塔の位置</h3>
+    <div class="section">
+        <h3>④ 塔の位置</h3>
         <div class="btn-group" data-key="q4">
             <button data-value='塔の位置「左後ろ」'>左後ろ</button>
             <button data-value='塔の位置「右後ろ」'>右後ろ</button>
         </div>
     </div>
 
-    <div class="section"><h3>⑤ 吸い込まれた分身</h3>
+    <div class="section">
+        <h3>⑤ 吸い込まれた分身</h3>
         <div class="btn-group" data-key="q5">
             <button data-value='A「北：横安置 南：縦安置」'>A</button>
             <button data-value='C「北：縦安置 南：横安置」'>C</button>
         </div>
     </div>
 
-    <div class="section"><h3>⑥ 立ち入り禁止島</h3>
+    <div class="section">
+        <h3>⑥ 立ち入り禁止島</h3>
         <div class="btn-group" data-key="q6">
             <button data-value='立ち入り禁止島「D」'>D</button>
             <button data-value='立ち入り禁止島「B」'>B</button>
         </div>
     </div>
 
-    <div class="section"><h3>⑦ 島にきた分身</h3>
+    <div class="section">
+        <h3>⑦ 島にきた分身</h3>
         <div class="btn-group" data-key="q7">
-            <button data-value="北">北</button>
-            <button data-value="南">南</button>
+            <button data-value="北" id="q7-north">北</button>
+            <button data-value="南" id="q7-south">南</button>
         </div>
     </div>
 </div>
@@ -200,10 +194,22 @@ document.querySelectorAll(".btn-group").forEach(group=>{
     buttons.forEach(btn=>{
         btn.onclick = ()=>{
             state[key] = btn.dataset.value;
+
             buttons.forEach(b=>{
                 b.classList.toggle("active", b===btn);
                 b.classList.toggle("inactive", b!==btn);
             });
+
+            /* 自動選択 */
+            if(key === "q5"){
+                if(btn.textContent === "A"){
+                    document.getElementById("q7-south").click();
+                }
+                if(btn.textContent === "C"){
+                    document.getElementById("q7-north").click();
+                }
+            }
+
             update();
         };
     });
@@ -218,24 +224,39 @@ document.getElementById("reset").onclick = ()=>{
 };
 
 function update(){
-    let q7Text="";
-    if(state.q7){
+    let q7Text = "";
+    let q8Text = "";
+
+    if(state.q7 && state.q2){
         if(state.q2==="1・2"){
-            q7Text = state.q7==="北"?'北「左右安置」':'南「前後安置」';
+            if(state.q7==="北"){
+                q7Text = '⑦ 北「左右安置」';
+                q8Text = '⑧ 前後安置';
+            }else{
+                q7Text = '⑦ 南「前後安置」';
+                q8Text = '⑧ 左右安置';
+            }
         }
         if(state.q2==="3・4"){
-            q7Text = state.q7==="北"?'北「前後安置」':'南「左右安置」';
+            if(state.q7==="北"){
+                q7Text = '⑦ 北「前後安置」';
+                q8Text = '⑧ 左右安置';
+            }else{
+                q7Text = '⑦ 南「左右安置」';
+                q8Text = '⑧ 前後安置';
+            }
         }
     }
 
-    const lines=[
+    const lines = [
         state.q1,
         state.q2 && `② ${state.q2}`,
         state.q3 && `③ ${state.q3}`,
         state.q4,
         state.q5,
         state.q6,
-        q7Text && `⑦ ${q7Text}`
+        q7Text,
+        q8Text
     ].filter(Boolean);
 
     output.innerHTML = lines.length
