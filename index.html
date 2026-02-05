@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FF14 攻略カンペ</title>
+<title>アルカディアンドリーム</title>
 
 <style>
 :root{
@@ -94,7 +94,7 @@ button.inactive{
     box-shadow:0 0 0 1px #222 inset;
 }
 
-/* 📱 iPhone */
+/*れすぽんしぶ */
 @media (max-width:768px){
     .container{
         flex-direction:column;
@@ -204,7 +204,7 @@ document.querySelectorAll(".btn-group").forEach(group=>{
             state[key] = btn.dataset.value;
             setActive(group, btn.dataset.value);
 
-            /* ★ ⑤ → ⑦ 自動選択（Safari対応） */
+            /* じどうせんたく */
             if(key === "q5"){
                 const northBtn = document.getElementById("q7-north");
                 const southBtn = document.getElementById("q7-south");
@@ -230,7 +230,7 @@ document.getElementById("reset").onclick = ()=>{
     document.querySelectorAll("button").forEach(b=>{
         b.classList.remove("active","inactive");
     });
-    output.innerHTML = "左の項目を選択してください";
+    output.innerHTML = "項目を選択してください";
 };
 
 function update(){
@@ -271,7 +271,7 @@ function update(){
 
     output.innerHTML = lines.length
         ? lines.join("<br>")
-        : "左の項目を選択してください";
+        : "項目を選択してください";
 }
 </script>
 
