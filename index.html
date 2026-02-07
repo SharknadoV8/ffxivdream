@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>アルカディアンドリーム</title>
+<title>FF14 攻略カンペ</title>
 
 <style>
 :root{
@@ -94,7 +94,7 @@ button.inactive{
     box-shadow:0 0 0 1px #222 inset;
 }
 
-/* れすぽんしぶ */
+/* レスポンシブ */
 @media (max-width:768px){
     .container{
         flex-direction:column;
@@ -162,8 +162,8 @@ button.inactive{
     <div class="section">
         <h3>⑥ 立ち入り禁止島</h3>
         <div class="btn-group" data-key="q6">
-            <button data-value='立ち入り禁止島「D」'>D</button>
-            <button data-value='立ち入り禁止島「B」'>B</button>
+            <button data-value="D">D</button>
+            <button data-value="B">B</button>
         </div>
     </div>
 
@@ -203,7 +203,7 @@ document.querySelectorAll(".btn-group").forEach(group=>{
             state[key] = btn.dataset.value;
             setActive(group, btn.dataset.value);
 
-            /*じどう */
+            // 自動選択
             if(key === "q5"){
                 const q7Group = document.querySelector('[data-key="q7"]');
                 if(btn.textContent === "A"){
@@ -232,7 +232,16 @@ document.getElementById("reset").onclick = ()=>{
 function update(){
     let q7Text = "";
     let q8Text = "";
+    let goIsland = "";
 
+    // 行く島（⑥反転）
+    if(state.q6){
+        goIsland = state.q6 === "D"
+            ? '行く島「B」'
+            : '行く島「D」';
+    }
+
+    // ⑦・⑧
     if(state.q7 && state.q2){
         if(state.q2 === "1・2"){
             if(state.q7 === "北"){
@@ -260,7 +269,7 @@ function update(){
         state.q3,
         state.q4,
         state.q5,
-        state.q6,
+        goIsland,
         q7Text,
         q8Text
     ].filter(Boolean);
